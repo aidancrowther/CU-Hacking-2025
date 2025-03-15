@@ -33,7 +33,7 @@ export default function() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const fileInput = document.getElementById('file').value;
-    const params = new URLSearchParams({ "file": "https://www.rsb.org.uk/images/15_Photosynthesis.pdf" }).toString();
+    const params = new URLSearchParams({ "file": fileInput }).toString();
 
     getQuiz();
 
