@@ -1,26 +1,48 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router";
+import { api } from "../api";
+import { useFetch } from "@gadgetinc/react";
 
-export default function () {
+/*export async function User() {
+  const [{ data, fetching, error }, refresh] = useFetch("/gemini", {
+    method: "GET",
+    json: true,
+  });
+
+  console.log(await data);
+
+}*/
+
+const handleSubmit = async (event) => {
+  event.preventDefault(); // Prevent default form submission behavior (page refresh)
+
+  // Construct query string from form data
+  const params = new URLSearchParams({ "file": "https://www.rsb.org.uk/images/15_Photosynthesis.pdf" }).toString();
+
+  try {
+    const response = await fetch(`/gemini?${params}`);
+    console.log(await response);
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    }
+  } catch (err) {
+    console.log(err.message);
+  } finally {
+    console.log(await response);
+  }
+};
+
+export default function() {
+
+  //User();
+
   return (
-    <Card className="p-8">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">👋 Hey, Developer!</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-base">
-          Start building your app&apos;s signed out area in <a
-            href="/edit/files/web/routes/_anon._index.jsx"
-            target="_blank"
-            rel="noreferrer"
-            className="font-medium hover:underline"
-          >
-            web/routes/_anon._index.jsx
-          </a>
-        </p>
-        
-      </CardContent>
-    </Card>
+    <div>
+      <form onSubmit={handleSubmit} enctype="multipart/form-data">
+        <label for="file">Choose a file:</label>
+        <input type="text" id="file" name="file" required></input>
+        <button type="submit">Upload</button>
+      </form>
+    </div>
   );
 }
