@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
+import { X } from "lucide-react";
 
 // Define types for API response format
 type ApiQuestionItem = {
@@ -40,9 +41,15 @@ enum QuizState {
   Results = "results"
 }
 
-export default function QuizPage() {
+// Define props interface for the component
+interface QuizPageProps {
+  onClose: () => void;
+  fileUrl?: string;
+}
+
+export default function QuizPage({ onClose, fileUrl: propFileUrl }: QuizPageProps) {
   // State for file input functionality
-  const [fileUrl, setFileUrl] = useState("https://www.rsb.org.uk/images/15_Photosynthesis.pdf");
+  const [fileUrl, setFileUrl] = useState(propFileUrl || "https://www.rsb.org.uk/images/15_Photosynthesis.pdf");
   const [initResponse, setInitResponse] = useState<any>(null);
 
   // Quiz state management
@@ -141,47 +148,16 @@ export default function QuizPage() {
     }
   };
 
-  // Restart the quiz
+  // Restart the quiz and immediately load new questions
   const handleRestartQuiz = () => {
-    setQuizState(QuizState.Initial);
     setCurrentQuestionIndex(0);
     setUserAnswers([]);
     setCurrentAnswer("");
     setScore(0);
     setQuizData(null);
+    // Immediately start loading the new quiz
+    initializeQuiz();
   };
-
-  // Render the file input section
-  const renderFileInput = () => (
-    <Card className="w-full max-w-md mb-6">
-      <CardHeader>
-        <CardTitle>Upload PDF for Quiz</CardTitle>
-        <CardDescription>Enter a URL to a PDF file to generate quiz questions</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleFileSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="file">PDF File URL:</Label>
-            <Input
-              id="file"
-              name="file"
-              value={fileUrl}
-              onChange={(e) => setFileUrl(e.target.value)}
-              placeholder="https://example.com/document.pdf"
-              required
-            />
-          </div>
-          <Button type="submit">Process File</Button>
-        </form>
-      </CardContent>
-      {initResponse && (
-        <CardFooter className="flex-col items-start">
-          <p className="text-sm font-medium mb-2">File processed successfully</p>
-          <pre className="text-xs overflow-auto max-h-40 w-full bg-slate-100 p-2 rounded">{JSON.stringify(initResponse, null, 2)}</pre>
-        </CardFooter>
-      )}
-    </Card>
-  );
 
   // Render the current quiz question
   const renderQuestion = () => {
@@ -200,14 +176,16 @@ export default function QuizPage() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-lg font-medium">{currentQuestion.question}</div>
-          <RadioGroup value={currentAnswer} onValueChange={setCurrentAnswer}>
-            {currentQuestion.options.map((option, index) => (
-              <div key={index} className="flex items-center space-x-2 p-2 rounded hover:bg-slate-50 hover:text-black">
-                <RadioGroupItem value={option} id={`option-${index}`} />
-                <Label htmlFor={`option-${index}`} className="flex-grow cursor-pointer">{option}</Label>
-              </div>
-            ))}
-          </RadioGroup>
+          <div className="max-h-60 overflow-y-auto">
+            <RadioGroup value={currentAnswer} onValueChange={setCurrentAnswer}>
+              {currentQuestion.options.map((option, index) => (
+                <div key={index} className="flex items-center space-x-2 p-2 rounded hover:bg-slate-50 hover:text-black">
+                  <RadioGroupItem value={option} id={`option-${index}`} />
+                  <Label htmlFor={`option-${index}`} className="flex-grow cursor-pointer">{option}</Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button
@@ -234,7 +212,7 @@ export default function QuizPage() {
             ({Math.round((score / quizData.questions.length) * 100)}%)
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 max-h-60 overflow-y-auto">
           {quizData.questions.map((question, index) => {
             const isCorrect = userAnswers[index] === question.correct_answer;
             return (
@@ -252,8 +230,10 @@ export default function QuizPage() {
             );
           })}
         </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button onClick={handleRestartQuiz}>Start New Quiz</Button>
+        <CardFooter className="flex justify-between pt-4 pb-2">
+          <Button onClick={handleRestartQuiz} className="mt-2">
+            Start New Quiz
+          </Button>
         </CardFooter>
       </Card>
     );
@@ -289,10 +269,10 @@ export default function QuizPage() {
 
   // Main render function
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 flex flex-col items-center">
-      {renderFileInput()}
+    <div className="w-full max-w-4xl mx-auto p-4 flex flex-col items-center relative">
+      {/* {renderFileInput()} */}
 
-      <Separator className="my-4" />
+      {/* <Separator className="my-4" /> */}
 
       {quizState === QuizState.Initial && renderInitial()}
       {quizState === QuizState.Loading && renderLoading()}

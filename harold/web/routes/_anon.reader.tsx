@@ -10,9 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import ReactMarkdown from 'react-markdown';
 import HaroldOutline from "../components/HaroldOutline";
+import Modal from '@/components/Modal';
+import QuizPage from './_anon.quizpage';
 
 export default function ReaderWithHelp() {
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const yass_text = queryParams.get('text');
   const file_url = queryParams.get('file');
@@ -27,6 +30,17 @@ export default function ReaderWithHelp() {
   const [isLoading, setIsLoading] = useState(false);
 
   const speechBubbleRef = useRef(null);
+
+  const handleReturnToHomepage = () => {
+    setIsOpen(false);
+    setShowAnswer(false);
+    setShowSpeechBubble(false);
+    setShowQuiz(false);
+    setResponse(null);
+    setQuery("");
+    setQuizData(null);
+    navigate('/', { state: { fresh: true } });
+  };
 
   const getHelp = async () => {
     if (!query.trim()) return;
@@ -48,17 +62,12 @@ export default function ReaderWithHelp() {
     }
   };
 
-  const startQuiz = async () => {
-    try {
-      const params = new URLSearchParams({ file: file_url }).toString();
-      const res = await fetch(`/quiz?${params}`);
-      const data = await res.json();
-      setQuizData(data);
-      setShowQuiz(true);
-      setShowSpeechBubble(false);
-    } catch (err) {
-      console.error(err);
-    }
+  const startQuiz = () => {
+    setShowQuiz(true);
+  };
+
+  const handleCloseQuiz = () => {
+    setShowQuiz(false);
   };
 
   useEffect(() => {
@@ -105,16 +114,7 @@ export default function ReaderWithHelp() {
         zIndex: 1001
       }}>
         <Button
-          onClick={() => {
-            setIsOpen(false);
-            setShowAnswer(false);
-            setShowSpeechBubble(false);
-            setShowQuiz(false);
-            setResponse(null);
-            setQuery("");
-            setQuizData(null);
-            navigate('/', { state: { fresh: true } });
-          }}
+          onClick={handleReturnToHomepage}
           className="flex items-center gap-2"
           variant="default"
         >
@@ -275,6 +275,12 @@ export default function ReaderWithHelp() {
             </motion.div>
           )}
         </div>
+      )}
+
+      {showQuiz && (
+        <Modal isOpen={showQuiz} onClose={handleCloseQuiz}>
+          <QuizPage file_url={file_url} onClose={handleCloseQuiz} />
+        </Modal>
       )}
     </div>
   );
