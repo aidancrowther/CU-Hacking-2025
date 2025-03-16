@@ -57,3 +57,39 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+.rainbow-text {
+  display: inline-flex;
+}
+
+.rainbow-text .h { color: #ff0000; }
+.rainbow-text .a { color: #ff7f00; }
+.rainbow-text .r { color: #ffff00; }
+.rainbow-text .o { color: #00ff00; }
+.rainbow-text .l { color: #0000ff; }
+.rainbow-text .d { color: #8b00ff; }
+
+@keyframes rainbow {
+  0% { color: #ff0000; }
+  16% { color: #ff7f00; }
+  33% { color: #ffff00; }
+  50% { color: #00ff00; }
+  66% { color: #0000ff; }
+  83% { color: #8b00ff; }
+  100% { color: #ff0000; }
+}
+
+.rainbow-text span {
+  animation: rainbow 4s linear infinite;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.rainbow-text span:nth-child(1) { animation-delay: 0.0s; }
+.rainbow-text span:nth-child(2) { animation-delay: 0.1s; }
+.rainbow-text span:nth-child(3) { animation-delay: 0.2s; }
+.rainbow-text span:nth-child(4) { animation-delay: 0.3s; }
+.rainbow-text span:nth-child(5) { animation-delay: 0.4s; }
+.rainbow-text span:nth-child(6) { animation-delay: 0.5s; }
+
+
