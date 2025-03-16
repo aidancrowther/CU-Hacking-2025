@@ -49,7 +49,10 @@ interface QuizPageProps {
 
 export default function QuizPage({ onClose, fileUrl: propFileUrl }: QuizPageProps) {
   // State for file input functionality
-  const [fileUrl, setFileUrl] = useState(propFileUrl || "https://www.rsb.org.uk/images/15_Photosynthesis.pdf");
+  const queryParams = new URLSearchParams(location.search);
+  const yass_text = queryParams.get('text');
+  const file_url = queryParams.get('file');
+  const [fileUrl, setFileUrl] = useState(file_url);
   const [initResponse, setInitResponse] = useState<any>(null);
 
   // Quiz state management
@@ -208,7 +211,7 @@ export default function QuizPage({ onClose, fileUrl: propFileUrl }: QuizPageProp
         <CardHeader>
           <CardTitle>Quiz Results</CardTitle>
           <CardDescription>
-            You scored {score} out of {quizData.questions.length} 
+            You scored {score} out of {quizData.questions.length}
             ({Math.round((score / quizData.questions.length) * 100)}%)
           </CardDescription>
         </CardHeader>

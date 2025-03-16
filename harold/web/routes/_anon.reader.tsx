@@ -31,6 +31,100 @@ export default function ReaderWithHelp() {
 
   const speechBubbleRef = useRef(null);
 
+  function playRandomVideoFromPlaylist(playlist) {
+    // Step 1: Randomly select a video from the playlist
+    const randomIndex = Math.floor(Math.random() * playlist.length);
+    const videoId = playlist[randomIndex];
+
+    // Step 2: Construct the YouTube video URL (autoplay enabled)
+    const videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+
+    // Step 3: Create an iframe to display the video
+    const iframe = document.createElement('iframe');
+    iframe.width = '560';
+    iframe.height = '315';
+    iframe.src = videoUrl;
+    iframe.frameborder = '0';
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    iframe.allowfullscreen = true;
+
+    // Step 4: Create a video container with styling for the modal
+    const videoContainer = document.createElement('div');
+    videoContainer.style.position = 'fixed';
+    videoContainer.style.top = '50%';
+    videoContainer.style.left = '50%';
+    videoContainer.style.transform = 'translate(-50%, -50%)';
+    videoContainer.style.zIndex = '1000';
+    videoContainer.style.backgroundColor = '#fff';
+    videoContainer.style.padding = '20px';
+    videoContainer.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)';
+    videoContainer.style.borderRadius = '10px';
+    videoContainer.appendChild(iframe);
+
+    const titleElement = document.createElement('h2');
+    titleElement.id = 'video-title';
+    titleElement.textContent = 'Wake up Pookie';
+    videoContainer.appendChild(titleElement);
+
+    // Step 5: Add a close button to the modal
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Close Video';
+    closeButton.style.marginTop = '10px';
+    closeButton.style.padding = '10px';
+    closeButton.style.backgroundColor = '#ff6347';
+    closeButton.style.color = 'white';
+    closeButton.style.border = 'none';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.borderRadius = '5px';
+    closeButton.onclick = () => {
+      // Remove the video modal when close button is clicked
+      document.body.removeChild(videoContainer);
+    };
+
+    // Append the close button to the video container
+    videoContainer.appendChild(closeButton);
+
+    // Step 6: Append the video container to the body
+    document.body.appendChild(videoContainer);
+  }
+
+  // Example usage:
+  // List of YouTube video IDs from the playlist
+  const playlist = [
+    'dQw4w9WgXcQ',
+    'D-UmfqFjpl0',
+    '7q7wAABkdaQ',
+    '7PzOTCeGwGU',
+    'cAsmIjCrxxc',
+    '7-WoV8FNDPo',
+    'UnktCDi-BVs',
+    'UOqFz3iPcTQ',
+    'bgJ_1WuhUig'
+  ];
+
+  function detectIdleMouse() {
+    let timeout;
+
+    // Function to reset the timer when the mouse moves
+    function resetTimer() {
+      // Clear the previous timeout if there was one
+      clearTimeout(timeout);
+
+      // Set a new timeout for 5 seconds of inactivity
+      timeout = setTimeout(() => {
+        playRandomVideoFromPlaylist(playlist);
+      }, 5000); // 5000 milliseconds = 5 seconds
+    }
+
+    // Add the mousemove event listener to the document
+    document.addEventListener('mousemove', resetTimer);
+
+    // Optionally, trigger resetTimer immediately to prevent the alert on page load
+    resetTimer();
+  }
+
+  detectIdleMouse();
+
   const getHelp = async () => {
     if (!query.trim()) return;
 
@@ -55,7 +149,7 @@ export default function ReaderWithHelp() {
     setQuizLoading(true);
     setQuizDialogOpen(true);
     setShowSpeechBubble(false);
-    
+
     try {
       const params = new URLSearchParams({ file: file_url }).toString();
       const res = await fetch(`/quiz?${params}`);
@@ -217,8 +311,26 @@ export default function ReaderWithHelp() {
             ))}
           </div>
         </div>
-        
+
         <textarea
+          id="reader"
+          value={yass_text || ''}
+          required
+          style={{
+            ...inputStyles,
+            position: 'fixed',
+            bottom: 0,
+            width: '100%',
+            borderTop: '1px solid #ccc',
+            background: 'white',
+            padding: '10px',
+          }}
+          onFocus={(e) => (e.target.style.borderColor = '#4f8a8b')}
+          onBlur={(e) => (e.target.style.borderColor = '#ccc')}
+          readOnly
+        />
+
+        {/* <textarea
           id="reader"
           value={yass_text || ''}
           required
@@ -226,7 +338,7 @@ export default function ReaderWithHelp() {
           onFocus={(e) => (e.target.style.borderColor = '#4f8a8b')}
           onBlur={(e) => (e.target.style.borderColor = '#ccc')}
           readOnly
-        />
+        /> */}
 
         <div style={{ position: 'fixed', bottom: '30px', right: '30px', margin: '0 0 10px 0' }}>
           {showSpeechBubble && (
@@ -323,11 +435,11 @@ export default function ReaderWithHelp() {
                     }
                   `}</style>
                   <div style={{ animation: "glitch 0.25s infinite", display: "inline-block", filter: "contrast(1.5) brightness(1.2)" }}>
-                    <div style={{ marginBottom: "5px", fontSize: "1.1rem" }}>Harold will help you</div>
+                    <div style={{ marginBottom: "5px", fontSize: "1.1rem" }}></div>
                     🚨🔥 🅰🆂🅺 👴 H̸A̸R̸O̸L̸D̸ 🧠💫 😭🫠
                   </div>
                 </div>
-                <div 
+                <div
                   onClick={startQuiz}
                   className="cursor-pointer text-right py-4 px-6 font-extrabold text-3xl relative overflow-hidden"
                   style={{
@@ -415,23 +527,23 @@ export default function ReaderWithHelp() {
                 marginBottom: "10px",
                 transform: "skew(-5deg, 2deg) rotate(3deg)",
                 filter: "contrast(150%) brightness(120%)"
-              }}>
-                <span style={{fontSize: "40px", color: "#ff00ff"}}>C</span>
-                <span style={{fontSize: "35px", color: "#ff0000"}}>L</span>
-                <span style={{fontSize: "42px", color: "#00ffff"}}>!</span>
-                <span style={{fontSize: "38px", color: "#ffff00"}}>C</span>
-                <span style={{fontSize: "45px", color: "#ff00cc"}}>C</span>
-                <span style={{fontSize: "36px", color: "#00ff00"}}>C</span>
-                <span style={{fontSize: "44px", color: "#ff3300"}}>C</span>
-                <span style={{fontSize: "32px", color: "#9900ff"}}> H</span>
-                <span style={{fontSize: "42px", color: "#00ccff"}}>U</span>
-                <span style={{fontSize: "38px", color: "#ff6600"}}>U</span>
-                <span style={{fontSize: "45px", color: "#33ff00"}}>R</span>
-                <span style={{fontSize: "40px", color: "#cc00ff"}}>R</span>
-                <span style={{fontSize: "46px", color: "#ff0066"}}>!!</span>
-                <span style={{fontSize: "38px", color: "#00ffaa"}}>!</span>
+              }}>haROlD WiLl HelllP YOU!!!!!!!1!!
+                <span style={{ fontSize: "40px", color: "#ff00ff" }}>C</span>
+                <span style={{ fontSize: "35px", color: "#ff0000" }}>L</span>
+                <span style={{ fontSize: "42px", color: "#00ffff" }}>!</span>
+                <span style={{ fontSize: "38px", color: "#ffff00" }}>C</span>
+                <span style={{ fontSize: "45px", color: "#ff00cc" }}>C</span>
+                <span style={{ fontSize: "36px", color: "#00ff00" }}>C</span>
+                <span style={{ fontSize: "44px", color: "#ff3300" }}>C</span>
+                <span style={{ fontSize: "32px", color: "#9900ff" }}> H</span>
+                <span style={{ fontSize: "42px", color: "#00ccff" }}>U</span>
+                <span style={{ fontSize: "38px", color: "#ff6600" }}>U</span>
+                <span style={{ fontSize: "45px", color: "#33ff00" }}>R</span>
+                <span style={{ fontSize: "40px", color: "#cc00ff" }}>R</span>
+                <span style={{ fontSize: "46px", color: "#ff0066" }}>!!</span>
+                <span style={{ fontSize: "38px", color: "#00ffaa" }}>!</span>
               </div>
-              
+
               {/* Animated Arrow */}
               <div className="absolute" style={{
                 right: "-50px",
@@ -486,9 +598,9 @@ export default function ReaderWithHelp() {
             `}</style>
           </div>
 
-          <img 
-            src="/harold.png" 
-            alt="Harold the Helper" 
+          <img
+            src="/harold.png"
+            alt="Harold the Helper"
             className="w-[180px] h-[180px] rounded-lg object-contain cursor-pointer relative z-10"
             style={{
               boxShadow: "0 0 20px 5px rgba(106, 90, 205, 0.6), 0 0 40px 10px rgba(75, 0, 130, 0.3)",
@@ -572,7 +684,7 @@ export default function ReaderWithHelp() {
                 position: 'relative',
                 textAlign: 'center',
               }}>
-                    <style jsx>{`
+                <style jsx>{`
                       @keyframes crazyRotate {
                         0% { transform: rotate(-2deg) scale(1); }
                         25% { transform: rotate(3deg) scale(1.03); }
@@ -600,35 +712,35 @@ export default function ReaderWithHelp() {
                         100% { border-width: 3px; border-color: #ff00cc; }
                       }
                     `}</style>
-                    <h1 style={{
-                      background: "linear-gradient(70deg, #ff00cc, #ff6600, #ffff00, #33cc33, #00ccff, #cc00ff, #ff3399)",
-                      backgroundSize: "300% 300%",
-                      animation: "rainbowText 3s linear infinite, crazyRotate 4s ease-in-out infinite",
-                      padding: "15px",
-                      borderRadius: "12px",
-                      border: "5px dashed #00ffff",
-                      fontSize: "2.2rem",
-                      fontWeight: "900",
-                      letterSpacing: "-1px",
-                      WebkitTextStroke: "2px black",
-                      textShadow: "3px 3px 0 #ff00cc, -3px -3px 0 #00ffff, 6px 6px 12px rgba(0,0,0,0.5)",
-                      marginBottom: "1rem",
-                      display: "inline-block",
-                      transform: "rotate(-2deg)",
-                      maxWidth: "95%"
-                    }}>
-                      <span style={{ animation: "glitchEffect 2s infinite", display: "inline-block" }}>
-                        🔥 t<span style={{fontSize:"2.5rem",color:"#ff00cc"}}>H</span>e y<span style={{fontSize:"2rem",color:"#00ffff"}}>A</span>s<span style={{fontSize:"2.4rem", transform:"rotate(8deg)", display:"inline-block"}}>S</span>s<span style={{fontSize:"2.1rem",color:"#ffcc00"}}>i</span>F<span style={{transform:"rotate(-10deg)", display:"inline-block"}}>i</span>e<span style={{fontSize:"2.3rem",color:"#ff3300"}}>D</span> 🌈
-                        <br/>
-                        <span style={{fontSize:"2.7rem", color:"#00ff99", filter:"brightness(1.3)"}}>s</span>Um<span style={{fontSize:"2.2rem", color:"#ff6600"}}>M</span>ar<span style={{textDecoration:"wavy underline #ff00ff"}}>Y</span> 💯 
-                        <span style={{fontSize:"1.9rem", color:"#9900ff"}}>H</span><span style={{fontSize:"2.5rem",color:"#ff0066"}}>a</span>r0<span style={{fontSize:"2.3rem",color:"#00ccff"}}>L</span>d
-                        <span style={{transform:"skew(-10deg,5deg)", display:"inline-block"}}> MaD</span>e 
-                      </span>
-                      <span style={{fontSize:"2.4rem", animation: "glitchEffect 1.5s infinite", filter:"contrast(1.3) brightness(1.2)"}}>
-                        4️⃣ Y0<span style={{fontSize:"2.8rem", color:"#33ff33"}}>U</span>‼️ 🧠✨
-                      </span>
-                    </h1>
-                  </div>
+                <h1 style={{
+                  background: "linear-gradient(70deg, #ff00cc, #ff6600, #ffff00, #33cc33, #00ccff, #cc00ff, #ff3399)",
+                  backgroundSize: "300% 300%",
+                  animation: "rainbowText 3s linear infinite, crazyRotate 4s ease-in-out infinite",
+                  padding: "15px",
+                  borderRadius: "12px",
+                  border: "5px dashed #00ffff",
+                  fontSize: "2.2rem",
+                  fontWeight: "900",
+                  letterSpacing: "-1px",
+                  WebkitTextStroke: "2px black",
+                  textShadow: "3px 3px 0 #ff00cc, -3px -3px 0 #00ffff, 6px 6px 12px rgba(0,0,0,0.5)",
+                  marginBottom: "1rem",
+                  display: "inline-block",
+                  transform: "rotate(-2deg)",
+                  maxWidth: "95%"
+                }}>
+                  <span style={{ animation: "glitchEffect 2s infinite", display: "inline-block" }}>
+                    🔥 t<span style={{ fontSize: "2.5rem", color: "#ff00cc" }}>H</span>e y<span style={{ fontSize: "2rem", color: "#00ffff" }}>A</span>s<span style={{ fontSize: "2.4rem", transform: "rotate(8deg)", display: "inline-block" }}>S</span>s<span style={{ fontSize: "2.1rem", color: "#ffcc00" }}>i</span>F<span style={{ transform: "rotate(-10deg)", display: "inline-block" }}>i</span>e<span style={{ fontSize: "2.3rem", color: "#ff3300" }}>D</span> 🌈
+                    <br />
+                    <span style={{ fontSize: "2.7rem", color: "#00ff99", filter: "brightness(1.3)" }}>s</span>Um<span style={{ fontSize: "2.2rem", color: "#ff6600" }}>M</span>ar<span style={{ textDecoration: "wavy underline #ff00ff" }}>Y</span> 💯
+                    <span style={{ fontSize: "1.9rem", color: "#9900ff" }}>H</span><span style={{ fontSize: "2.5rem", color: "#ff0066" }}>a</span>r0<span style={{ fontSize: "2.3rem", color: "#00ccff" }}>L</span>d
+                    <span style={{ transform: "skew(-10deg,5deg)", display: "inline-block" }}> MaD</span>e
+                  </span>
+                  <span style={{ fontSize: "2.4rem", animation: "glitchEffect 1.5s infinite", filter: "contrast(1.3) brightness(1.2)" }}>
+                    4️⃣ Y0<span style={{ fontSize: "2.8rem", color: "#33ff33" }}>U</span>‼️ 🧠✨
+                  </span>
+                </h1>
+              </div>
               <Card className="border-2 border-purple-200 rounded-2xl overflow-hidden">
                 <CardContent className="p-6 bg-gradient-to-br from-blue-50 to-purple-50">
                   <div className="prose-lg max-w-none mt-2" style={{
@@ -659,7 +771,7 @@ export default function ReaderWithHelp() {
           )}
         </div>
       )}
-      
+
       {/* Quiz Dialog */}
       <Dialog open={quizDialogOpen} onOpenChange={setQuizDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">

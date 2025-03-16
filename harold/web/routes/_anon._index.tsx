@@ -174,6 +174,49 @@ export default function() {
 
   return (
     <>
+      {/* Fixed Harold decorations on sides */}
+      <div style={{
+        position: 'fixed',
+        left: '40px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        zIndex: 10,
+        pointerEvents: 'none' as const,
+      }}>
+        <img 
+          src="/harold.png" 
+          alt="Decorative Harold" 
+          style={{
+            width: '400px',
+            height: '400px', 
+            objectFit: 'contain',
+            filter: 'drop-shadow(0 0 25px #ff00ff) drop-shadow(0 0 40px #ff00ff)',
+            animation: 'sideHaroldFloat 10s ease-in-out infinite',
+          }}
+        />
+      </div>
+      
+      <div style={{
+        position: 'fixed',
+        right: '40px',
+        top: '50%',
+        transform: 'translateY(-50%) scaleX(-1)',
+        zIndex: 10,
+        pointerEvents: 'none' as const,
+      }}>
+        <img 
+          src="/harold.png" 
+          alt="Decorative Harold" 
+          style={{
+            width: '400px',
+            height: '400px',
+            objectFit: 'contain',
+            filter: 'drop-shadow(0 0 25px #00ffff) drop-shadow(0 0 40px #00ffff)',
+            animation: 'sideHaroldFloat 10s ease-in-out infinite reverse',
+          }}
+        />
+      </div>
+      
       <style>
         {`
           @keyframes haroldBounce {
@@ -182,6 +225,15 @@ export default function() {
             50% { transform: translateY(0) scale(1.2) rotate(0deg); }
             75% { transform: translateY(-5px) scale(1.1) rotate(5deg); }
             100% { transform: translateY(0) scale(1) rotate(0deg); }
+          }
+          
+          @keyframes sideHaroldFloat {
+            0% { transform: translateY(0) scale(1) rotate(0deg); filter: drop-shadow(0 0 15px #ff00ff) brightness(1); }
+            20% { transform: translateY(-15px) scale(1.05) rotate(-3deg); filter: drop-shadow(0 0 20px #00ffff) brightness(1.2); }
+            40% { transform: translateY(10px) scale(1.1) rotate(3deg); filter: drop-shadow(0 0 25px #39ff14) brightness(1.4); }
+            60% { transform: translateY(-5px) scale(1.08) rotate(-2deg); filter: drop-shadow(0 0 20px #fe0000) brightness(1.3); }
+            80% { transform: translateY(12px) scale(1.03) rotate(2deg); filter: drop-shadow(0 0 15px #ff00ff) brightness(1.1); }
+            100% { transform: translateY(0) scale(1) rotate(0deg); filter: drop-shadow(0 0 15px #ff00ff) brightness(1); }
           }
           
           @keyframes airhornGrow {
@@ -534,7 +586,7 @@ export default function() {
               fontFamily: '"Impact", fantasy',
               whiteSpace: 'nowrap' as const,
             }}>
-              THE HAROLD HOMEWORK HELPER
+              HAROLD THE HOMEWORK HELPER
             </h1>
           </div>
           
