@@ -4,14 +4,16 @@ import { Link } from "react-router";
 import { api } from "../api";
 import { useFetch } from "@gadgetinc/react";
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router';
-import { useLocation } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ReactMarkdown from 'react-markdown';
+import QuizPage from "./_anon.quizpage";
 
 
 export default function ReaderWithHelp() {
+  const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const yass_text = queryParams.get('text');
@@ -22,9 +24,10 @@ export default function ReaderWithHelp() {
   const [response, setResponse] = useState(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [showSpeechBubble, setShowSpeechBubble] = useState(false);
-  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizDialogOpen, setQuizDialogOpen] = useState(false);
   const [quizData, setQuizData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [quizLoading, setQuizLoading] = useState(false);
 
   const speechBubbleRef = useRef(null);
 
@@ -49,15 +52,19 @@ export default function ReaderWithHelp() {
   };
 
   const startQuiz = async () => {
+    setQuizLoading(true);
+    setQuizDialogOpen(true);
+    setShowSpeechBubble(false);
+    
     try {
       const params = new URLSearchParams({ file: file_url }).toString();
       const res = await fetch(`/quiz?${params}`);
       const data = await res.json();
       setQuizData(data);
-      setShowQuiz(true);
-      setShowSpeechBubble(false);
     } catch (err) {
       console.error(err);
+    } finally {
+      setQuizLoading(false);
     }
   };
 
@@ -112,7 +119,7 @@ export default function ReaderWithHelp() {
             setIsOpen(false);
             setShowAnswer(false);
             setShowSpeechBubble(false);
-            setShowQuiz(false);
+            setQuizDialogOpen(false);
             setResponse(null);
             setQuery("");
             setQuizData(null);
@@ -652,6 +659,23 @@ export default function ReaderWithHelp() {
           )}
         </div>
       )}
+      
+      {/* Quiz Dialog */}
+      <Dialog open={quizDialogOpen} onOpenChange={setQuizDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          {quizLoading ? (
+            <div className="flex flex-col items-center justify-center p-12 text-center">
+              <div className="mb-6">
+                <div className="inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+              </div>
+              <h2 className="text-2xl font-bold mb-4 text-blue-600">Creating Your Quiz...</h2>
+              <p className="text-gray-600 mb-4">Harold is crafting some mind-bending questions for you! 🧠✨</p>
+            </div>
+          ) : (
+            quizData && <QuizPage quizData={quizData} onClose={() => setQuizDialogOpen(false)} isLoading={quizLoading} />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
