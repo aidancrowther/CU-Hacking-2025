@@ -4,14 +4,16 @@ import { Link } from "react-router";
 import { api } from "../api";
 import { useFetch } from "@gadgetinc/react";
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router';
-import { useLocation } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ReactMarkdown from 'react-markdown';
+// import QuizPage from "./_anon.quizpage";
 
 
 export default function ReaderWithHelp() {
+  const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const yass_text = queryParams.get('text');
@@ -22,7 +24,7 @@ export default function ReaderWithHelp() {
   const [response, setResponse] = useState(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [showSpeechBubble, setShowSpeechBubble] = useState(false);
-  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizDialogOpen, setQuizDialogOpen] = useState(false);
   const [quizData, setQuizData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,7 +56,7 @@ export default function ReaderWithHelp() {
       const res = await fetch(`/quiz?${params}`);
       const data = await res.json();
       setQuizData(data);
-      setShowQuiz(true);
+      setQuizDialogOpen(true);
       setShowSpeechBubble(false);
     } catch (err) {
       console.error(err);
@@ -112,7 +114,7 @@ export default function ReaderWithHelp() {
             setIsOpen(false);
             setShowAnswer(false);
             setShowSpeechBubble(false);
-            setShowQuiz(false);
+            setQuizDialogOpen(false);
             setResponse(null);
             setQuery("");
             setQuizData(null);
@@ -652,6 +654,13 @@ export default function ReaderWithHelp() {
           )}
         </div>
       )}
+      
+      {/* Quiz Dialog */}
+      <Dialog open={quizDialogOpen} onOpenChange={setQuizDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          {quizData && <QuizPage quizData={quizData} onClose={() => setQuizDialogOpen(false)} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
