@@ -9,5 +9,6 @@ declare module "react-router" {
 type Params = {
   "/": {};
   "/aidantesting": {};
+  "/quizpage": {};
   "/reader": {};
 };
