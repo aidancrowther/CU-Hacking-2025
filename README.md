@@ -8,3 +8,5 @@ Homework Help Harold
  - Select various options for video backgrounds to help you focus
  - yass-ify course material
  - interact with harold to ask clarifying questions
+
+Check It Out Here! https://harold.gadget.app/ 
