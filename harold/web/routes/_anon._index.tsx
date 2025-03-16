@@ -176,6 +176,86 @@ export default function() {
     <>
       <style>
         {`
+          @keyframes haroldBounce {
+            0% { transform: translateY(0) scale(1) rotate(0deg); }
+            25% { transform: translateY(-10px) scale(1.1) rotate(-5deg); }
+            50% { transform: translateY(0) scale(1.2) rotate(0deg); }
+            75% { transform: translateY(-5px) scale(1.1) rotate(5deg); }
+            100% { transform: translateY(0) scale(1) rotate(0deg); }
+          }
+          
+          @keyframes airhornGrow {
+            0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg) brightness(1); }
+            25% { transform: scale(1.3) rotate(-5deg); filter: hue-rotate(90deg) brightness(1.5); }
+            50% { transform: scale(1.1) rotate(0deg); filter: hue-rotate(180deg) brightness(1.8); }
+            75% { transform: scale(1.4) rotate(5deg); filter: hue-rotate(270deg) brightness(1.5); }
+            100% { transform: scale(1) rotate(0deg); filter: hue-rotate(360deg) brightness(1); }
+          }
+          
+          @keyframes titleGlitch {
+            0% { 
+              transform: skew(-3deg) translate(0, 0); 
+              text-shadow: 3px 3px 0 #ff00ff, -3px -3px 0 #00ffff;
+              filter: hue-rotate(0deg);
+            }
+            10% { 
+              transform: skew(3deg) translate(-2px, 2px); 
+              text-shadow: -3px 3px 0 #39ff14, 3px -3px 0 #fe0000;
+              filter: hue-rotate(36deg);
+            }
+            20% { 
+              transform: skew(-2deg) translate(2px, -2px); 
+              text-shadow: 2px -2px 0 #00ffff, -2px 2px 0 #ff00ff;
+              filter: hue-rotate(72deg);
+            }
+            30% { 
+              transform: skew(4deg) translate(-1px, 1px); 
+              text-shadow: -5px 2px 0 #fe0000, 5px -2px 0 #39ff14;
+              filter: hue-rotate(108deg);
+            }
+            40% { 
+              transform: skew(-1deg) translate(1px, -1px); 
+              text-shadow: 3px 3px 0 #39ff14, -3px -3px 0 #ff00ff;
+              filter: hue-rotate(144deg);
+            }
+            50% { 
+              transform: skew(5deg) translate(0, 0); 
+              text-shadow: -6px 3px 0 #00ffff, 6px -3px 0 #fe0000;
+              filter: hue-rotate(180deg);
+            }
+            60% { 
+              transform: skew(-5deg) translate(2px, 2px); 
+              text-shadow: 2px 2px 0 #ff00ff, -2px -2px 0 #39ff14;
+              filter: hue-rotate(216deg);
+            }
+            70% { 
+              transform: skew(2deg) translate(-2px, -2px); 
+              text-shadow: -4px 4px 0 #fe0000, 4px -4px 0 #00ffff;
+              filter: hue-rotate(252deg);
+            }
+            80% { 
+              transform: skew(-4deg) translate(1px, 1px); 
+              text-shadow: 5px -2px 0 #39ff14, -5px 2px 0 #ff00ff;
+              filter: hue-rotate(288deg);
+            }
+            90% { 
+              transform: skew(1deg) translate(-1px, -1px); 
+              text-shadow: -3px -3px 0 #00ffff, 3px 3px 0 #fe0000;
+              filter: hue-rotate(324deg);
+            }
+            100% { 
+              transform: skew(-3deg) translate(0, 0); 
+              text-shadow: 3px 3px 0 #ff00ff, -3px -3px 0 #00ffff;
+              filter: hue-rotate(360deg);
+            }
+          }
+          
+          @keyframes rainbowBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          
           @keyframes regularSpin {
             0% {
               transform: rotate(0deg);
@@ -381,6 +461,112 @@ export default function() {
           }
         `}
       </style>
+      
+      {/* Left Harold - Fixed on the left side */}
+      <div style={{
+        position: 'fixed' as const,
+        left: '0',
+        top: '0',
+        bottom: '0',
+        width: '350px',
+        display: 'flex',
+        alignItems: 'center',
+        zIndex: '-1',
+      }}>
+        <div style={{
+          animation: 'haroldBounce 3s ease-in-out infinite',
+        }}>
+          <img 
+            src="/harold.png" 
+            alt="Harold" 
+            style={{
+              width: '350px',
+              objectFit: 'contain',
+              display: 'block',
+              filter: 'drop-shadow(0 0 10px #ff00ff)',
+            }}
+          />
+        </div>
+      </div>
+      
+      {/* Right Harold - Fixed on the right side */}
+      <div style={{
+        position: 'fixed' as const,
+        right: '0',
+        top: '0',
+        bottom: '0',
+        width: '350px',
+        display: 'flex',
+        alignItems: 'center',
+        zIndex: '-1',
+      }}>
+        <div style={{
+          animation: 'haroldBounce 3s ease-in-out infinite reverse',
+        }}>
+          <img 
+            src="/harold.png" 
+            alt="Harold" 
+            style={{
+              width: '350px',
+              objectFit: 'contain',
+              display: 'block',
+              filter: 'drop-shadow(0 0 10px #00ffff)',
+              transform: 'scaleX(-1)',
+            }}
+          />
+        </div>
+      </div>
+      
+      {/* Title Container - Centered */}
+      <div style={{
+        margin: '20px auto 60px auto',
+        textAlign: 'center',
+        maxWidth: '900px',
+        position: 'relative' as const,
+        zIndex: '1',
+      }}>
+        {/* Title */}
+        <div style={{
+          background: 'linear-gradient(90deg, #ff00ff, #00ffff, #39ff14, #fe0000, #ff00ff)',
+          backgroundSize: '400% 400%',
+          animation: 'rainbowBackground 5s ease infinite',
+          padding: '20px 30px',
+          borderRadius: '20px',
+          boxShadow: '0 0 40px #ff00ff, 0 0 80px rgba(0, 255, 255, 0.8), inset 0 0 30px rgba(57, 255, 20, 0.4)',
+          border: '6px solid',
+          borderImageSlice: '1',
+          borderImageSource: 'linear-gradient(to right, #ff00ff, #00ffff, #39ff14, #fe0000)',
+          transform: 'perspective(1000px) rotateX(5deg)',
+          margin: '0 auto 20px',
+        }}>
+          <h1 style={{
+            fontSize: '56px',
+            fontWeight: 'bold' as const,
+            margin: '0',
+            color: '#fff',
+            textShadow: '0 0 10px #ff00ff, 0 0 20px #00ffff, 3px 3px 0 #39ff14, -3px -3px 0 #fe0000',
+            letterSpacing: '4px',
+            lineHeight: '1.2',
+            animation: 'titleGlitch 5s linear infinite',
+            fontFamily: '"Impact", fantasy',
+            whiteSpace: 'nowrap' as const,
+          }}>
+            THE HAROLD HOMEWORK HELPER
+          </h1>
+        </div>
+        
+        <div style={{
+          fontSize: '24px',
+          color: '#00ffff',
+          fontWeight: 'bold' as const,
+          marginBottom: '40px',
+          animation: '7s linear infinite',
+          letterSpacing: '2px',
+        }}>
+          👁️‍🗨️ 'HIDE THE PAIN HAROLD' will YAAAASSSIFY ur notes 2 keep yew brainrotted while you study! 📚✨
+        </div>
+      </div>
+      
       <div style={overlayStyles}>
         <div style={modalStyles}>
           <h2 style={{
@@ -392,7 +578,9 @@ export default function() {
             animation: 'wildSpin 15s linear infinite',
             padding: '20px',
             lineHeight: '1.5'
-          }}>H̷A̷R̷O̷L̷D̷ 𝕀̷S 𝕽𝕰𝒜𝒟𝒾𝑁𝒢 Y0UR P̸D̷F... 👀💣🚨 W̶A̷T̸C̸H̸ 𝕳𝑰𝕸 𝕊𝒞𝒓𝒐𝓁𝓁𝒾𝓃𝑔 𝓁𝒾𝓀𝑒 A̸𝖉̶𝓭𝓲𝓬𝓽 𝗂𝘁...💥🥴⏳... 💥𝓗𝒶𝓇𝑜𝓁𝒹 𝑰𝒔 𝒏𝒐𝒕 𝓈𝓉𝑜𝓅𝒾𝓃𝑔!!! 🚨🔥📉</h2>
+          }}>H̷A̷R̷O̷L̷D̷ 𝕀̷S 𝕽𝕰𝒜𝒟𝒾𝑁𝒢 Y0UR P̸D̷F... 👀💣🚨 
+            W̶A̷T̸C̸H̸ 𝕳𝑰𝕸 𝕊𝒞𝒓𝒐𝓁𝓁𝒾𝓃𝑔 𝓁𝒾𝓀𝑒 A̸𝖉̶𝓭𝓲𝓬𝓽 𝗂𝘁...💥🥴⏳... 
+            💥𝓗𝒶𝓇𝑜𝓁𝒹 𝑰𝒔 𝒏𝒐𝒕 𝓈𝓉𝑜𝓅𝒾𝓃𝑔!!! 🚨🔥📉</h2>
           <div style={spinnerStyles}></div>
         </div>
       </div>
