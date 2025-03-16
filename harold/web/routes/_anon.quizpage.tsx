@@ -202,7 +202,7 @@ export default function QuizPage() {
           <div className="text-lg font-medium">{currentQuestion.question}</div>
           <RadioGroup value={currentAnswer} onValueChange={setCurrentAnswer}>
             {currentQuestion.options.map((option, index) => (
-              <div key={index} className="flex items-center space-x-2 p-2 rounded hover:bg-slate-50">
+              <div key={index} className="flex items-center space-x-2 p-2 rounded hover:bg-slate-50 hover:text-black">
                 <RadioGroupItem value={option} id={`option-${index}`} />
                 <Label htmlFor={`option-${index}`} className="flex-grow cursor-pointer">{option}</Label>
               </div>
@@ -230,7 +230,7 @@ export default function QuizPage() {
         <CardHeader>
           <CardTitle>Quiz Results</CardTitle>
           <CardDescription>
-            You scored {score} out of {quizData.questions.length}
+            You scored {score} out of {quizData.questions.length} 
             ({Math.round((score / quizData.questions.length) * 100)}%)
           </CardDescription>
         </CardHeader>
@@ -239,8 +239,8 @@ export default function QuizPage() {
             const isCorrect = userAnswers[index] === question.correct_answer;
             return (
               <div key={index} className={`p-3 rounded ${isCorrect ? "bg-green-50" : "bg-red-50"}`}>
-                <p className="font-medium">{index + 1}. {question.question}</p>
-                <p className="text-sm mt-1">
+                <p className="font-medium text-black">{index + 1}. {question.question}</p>
+                <p className="text-sm mt-1 text-black">
                   Your answer: <span className={isCorrect ? "text-green-600 font-medium" : "text-red-600 font-medium"}>
                     {userAnswers[index] || "No answer"}
                   </span>
