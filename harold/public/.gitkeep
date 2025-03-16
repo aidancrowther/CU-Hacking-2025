@@ -1,0 +1,2 @@
+# This file ensures the public directory is tracked in git
+# The public directory is used for static assets that should be served directly
