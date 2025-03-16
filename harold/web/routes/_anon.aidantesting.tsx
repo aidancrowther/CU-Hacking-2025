@@ -17,10 +17,10 @@ import { useState } from 'react';
 export default function() {
 
   const getQuiz = async () => {
-    const params = new URLSearchParams({ "file": "https://www.rsb.org.uk/images/15_Photosynthesis.pdf" }).toString();
+    const params = new URLSearchParams({ "file": "https://www.rsb.org.uk/images/15_Photosynthesis.pdf", "question": "Why aren't plants black" }).toString();
 
     try {
-      const response = await fetch(`/quiz?${params}`);
+      const response = await fetch(`/followup?${params}`);
       const quiz = await response.json();
       console.log(quiz.text);
     } catch (err) {
@@ -33,7 +33,7 @@ export default function() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const fileInput = document.getElementById('file').value;
-    const params = new URLSearchParams({ "file": fileInput }).toString();
+    const params = new URLSearchParams({ "file": fileInput == "" ? "https://www.rsb.org.uk/images/15_Photosynthesis.pdf" : fileInput }).toString();
 
     getQuiz();
 
